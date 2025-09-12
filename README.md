@@ -3,7 +3,7 @@
 ## Descripción
 Este proyecto es una plantilla para levantar un entorno de desarrollo completo usando Docker Compose. Incluye los siguientes servicios:
 
-- **PostgreSQL**: Base de datos relacional, inicializada con el script `init-evolution.sql` que crea la base de datos `evolution`.
+- **PostgreSQL con pgvector**: Base de datos relacional con soporte para almacenamiento y búsqueda de vectores, ideal para aplicaciones de IA y búsquedas semánticas. Se inicializa con el script `init-evolution.sql` (crea la base de datos `evolution`) y el script `init-pgvector.sql` (habilita la extensión vectorial).
 - **pgAdmin**: Herramienta web para administrar la base de datos PostgreSQL, accesible desde el puerto 8081 en localhost.
 - **Redis**: Almacenamiento en memoria para caché y persistencia de datos.
 - **Evolution API**: API oficial de Evolution, expuesta en el puerto 8080 solo en localhost, configurada mediante variables de entorno y con persistencia de instancias.
@@ -37,7 +37,7 @@ Todos los servicios se comunican a través de una red interna definida en Docker
    docker-compose up -d
    ```
 
-4. La base de datos `evolution` se crea automáticamente al iniciar el contenedor de PostgreSQL gracias al script `init-evolution.sql`.
+4. La base de datos `evolution` y la extensión vectorial (pgvector) se crean automáticamente al iniciar el contenedor de PostgreSQL gracias a los scripts `init-evolution.sql` y `init-pgvector.sql`.
 
 5. Accede a pgAdmin en [http://localhost:8081](http://localhost:8081) y a la Evolution API en [http://localhost:8080](http://localhost:8080) (solo desde localhost).
 
@@ -47,9 +47,22 @@ Todos los servicios se comunican a través de una red interna definida en Docker
    ```
 
 ## Estructura
-- `docker-compose.yml`: Configuración de los servicios Docker (PostgreSQL, pgAdmin, Redis, Evolution API).
+- `docker-compose.yml`: Configuración de los servicios Docker (PostgreSQL con pgvector, pgAdmin, Redis, Evolution API).
 - `init-evolution.sql`: Script de inicialización que crea la base de datos `evolution`.
+- `init-pgvector.sql`: Script que habilita la extensión vectorial pgvector en PostgreSQL.
 - `.env`: Variables de entorno necesarias para los servicios.
+## Uso de pgvector
+
+Una vez levantado el entorno, puedes crear tablas con columnas vectoriales en PostgreSQL usando:
+
+```sql
+CREATE TABLE items (
+   id serial PRIMARY KEY,
+   embedding vector(1536)
+);
+```
+
+Consulta la documentación oficial de [pgvector](https://github.com/pgvector/pgvector) para más ejemplos y casos de uso.
 
 ## Licencia
 Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.

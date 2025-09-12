@@ -1,7 +1,7 @@
 services:
   db: # Servicio de base de datos
     container_name: postgres # Nombre del contenedor
-    image: postgres:17.6-alpine3.22 # Imagen de Postgres que se usará
+    image: ankane/pgvector:latest # Imagen de Postgres con pgvector incluida
     restart: always # Reinicia el contenedor automáticamente si falla
     environment: # Variables de entorno para configurar Postgres
       POSTGRES_USER: ${POSTGRES_USER} # Usuario de la base de datos
@@ -11,6 +11,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data # Volumen para persistir los datos de la base de datos
       - ./init-evolution.sql:/docker-entrypoint-initdb.d/init-evolution.sql # Script para crear la base de datos
+      - ./init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql # Script para instalar pgvector
     networks:
       - internal_net # Red interna dedicada
   pgAdmin: # Servicio de administración de Postgres
