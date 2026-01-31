@@ -28,19 +28,19 @@ services:
     networks:
       - internal_net # Red interna dedicada
   redis:
-      container_name: redis # Nombre del contenedor
-      image: redis:latest # Imagen de Redis
-      restart: always # Reinicia el contenedor automáticamente si falla
-      volumes:
-        - redis_data:/data # Volumen para persistir los datos de Redis
-      networks:
-        - internal_net # Red interna dedicada
+    container_name: redis # Nombre del contenedor
+    image: redis:latest # Imagen de Redis
+    restart: always # Reinicia el contenedor automáticamente si falla
+    volumes:
+      - redis_data:/data # Volumen para persistir los datos de Redis
+    networks:
+      - internal_net # Red interna dedicada
   evolution-api: # Servicio Evolution API
     container_name: evolution_api # Nombre del contenedor
-    image: atendai/evolution-api:v2.1.1 # Imagen oficial Evolution API
+    image: atendai/evolution-api:latest # Imagen oficial Evolution API
     restart: always # Reinicia el contenedor automáticamente si falla
     ports:
-    - "127.0.0.1:8080:8080" # Expone el puerto 8080 solo en localhost para acceder a la API
+      - "127.0.0.1:8080:8080" # Expone el puerto 8080 solo en localhost para acceder a la API
     env_file:
       - .env # Usa las variables de entorno de tu archivo .env
     volumes:
@@ -51,18 +51,17 @@ services:
       - db # Espera a que la base de datos esté lista
       - redis # Espera a que Redis esté listo
   n8n: # Servicio n8n para automatización de flujos
-      image: docker.n8n.io/n8nio/n8n:latest # Imagen oficial de n8n
-      container_name: n8n # Nombre del contenedor
-      restart: always # Reinicia automáticamente si falla
-      ports:
-        - "127.0.0.1:5678:5678" # Expone el puerto 5678 solo en localhost
-      env_file:
-        - .env # Usa las variables de entorno de n8n desde el archivo .env
-      volumes:
-        - n8n_data:/home/node/.n8n # Volumen para persistencia de datos de n8n
-      networks:
-        - internal_net # Red interna para comunicación con otros servicios
-
+    image: docker.n8n.io/n8nio/n8n:latest # Imagen oficial de n8n
+    container_name: n8n # Nombre del contenedor
+    restart: always # Reinicia automáticamente si falla
+    ports:
+      - "127.0.0.1:5678:5678" # Expone el puerto 5678 solo en localhost
+    env_file:
+      - .env # Usa las variables de entorno de n8n desde el archivo .env
+    volumes:
+      - n8n_data:/home/node/.n8n # Volumen para persistencia de datos de n8n
+    networks:
+      - internal_net # Red interna para comunicación con otros servicios
 
 volumes:
   db_data: # Volumen nombrado para almacenar los datos de Postgres
@@ -73,4 +72,3 @@ volumes:
 networks:
   internal_net: # Red interna para los servicios
     driver: bridge
-      
